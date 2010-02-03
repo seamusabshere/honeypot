@@ -1,16 +1,107 @@
 = honeypot
 
-Description goes here.
+Catch bad guys when they stick their hands in the honey.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+== models
+
+copy gemdir/models/*.rb to your models dir
+
+== requestables interface
+
+requestables (like User, Vote, etc.) should define #actor
+
+  class User < ActiveRecord::Base
+    include RemoteRequestLogger
+    def actor; self; end
+  end
+
+  class Vote < ActiveRecord::Base
+    belongs_to :user
+    include RemoteRequestLogger
+    def actor; user; end
+  end
+
+== usage in controllers
+
+put this in your application controller so it has a maximum chance of grabbing the ip
+
+  class ApplicationController < ActionController::Base
+    # this is safe enough for engineyard cloud, where internal ip addresses always start with 10.
+    def ensure_remote_ip
+      session[:remote_ip] = request.remote_ip unless request.remote_ip.starts_with?('10.')
+    end
+    prepend_before_filter :ensure_remote_ip
+  end
+
+then you invoke log_remote_request with both session and request
+
+  class SessionsController < ApplicationController
+    def create
+      # @user = [...]
+      @user.log_remote_request session, request
+    end
+  end
+
+== migration
+
+  create_table "remote_hosts" do |t|
+    t.string   "ip_address"
+    t.string   "hostname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.string   "city"
+    t.string   "country_code"
+    t.string   "state_name"
+  end
+  add_index "remote_hosts", ["ip_address"], :name => "index_remote_hosts_on_ip_address"
+  create_table "remote_requests" do |t|
+    t.integer  "requestable_id"
+    t.string   "requestable_type"
+    t.integer  "remote_host_id"
+    t.integer  "hits"
+    t.string   "last_http_referer"
+    t.string   "last_request_uri"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+  add_index "remote_requests", ["remote_host_id"], :name => "index_remote_requests_on_remote_host_id"
+  add_index "remote_requests", ["requestable_type", "requestable_id"], :name => "index_remote_requests_on_requestable"
+
+== helper for active-scaffold
+
+  def remote_requests_column(record)
+    str = '<ul>'
+    str << record.remote_requests.map { |x| content_tag :li, x.to_label }.join
+    str << '</ul>'
+    str
+  end
+
+== remote hosts controller with active-scaffold
+
+  class RemoteHostsController < ApplicationController
+    allow_access :admin
+    layout 'admin'
+    helper :remote_hosts
+    active_scaffold :remote_host do |config|
+      config.list.per_page = 100
+      config.actions.exclude :search, :create, :update, :delete
+      config.columns.add :remote_requests_count
+      config.columns[:remote_requests_count].sort_by :sql => "(SELECT COUNT(remote_requests.id) FROM remote_requests WHERE remote_requests.remote_host_id = remote_hosts.id)"
+      config.columns.add :last_remote_request_at
+      config.columns[:last_remote_request_at].sort_by :sql => "(SELECT MAX(remote_requests.updated_at) FROM remote_requests WHERE remote_requests.remote_host_id = remote_hosts.id)"
+      config.list.columns = %w{
+        hostname
+        ip_address
+        country_code
+        state_name
+        city
+        remote_requests_count
+        last_remote_request_at
+      }
+    end
+  end
 
 == Copyright
 
