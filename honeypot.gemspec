@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "honeypot.gemspec",
      "lib/honeypot.rb",
      "lib/remote_host.rb",
      "lib/remote_request.rb",
