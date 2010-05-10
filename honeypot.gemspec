@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{honeypot}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Seamus Abshere"]
@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
      "lib/honeypot/ipaddr_ext.rb",
      "lib/honeypot/rack.rb",
      "lib/honeypot/railtie.rb",
-     "lib/remote_host.rb",
-     "lib/remote_request.rb",
+     "lib/honeypot/remote_host.rb",
+     "lib/honeypot/remote_request.rb",
      "test/helper.rb",
      "test/test_honeypot.rb"
   ]
