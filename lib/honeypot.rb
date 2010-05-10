@@ -18,8 +18,8 @@ module Honeypot
   end
   
   def log_remote_request(session, request)
-    return unless session['honeypot.last_known_remote_ip'].present?
-    remote_host = RemoteHost.find_or_create_by_ip_address session['honeypot.last_known_remote_ip']
+    effective_ip_address = session['honeypot.last_known_remote_ip'].present? ? session['honeypot.last_known_remote_ip'] : request.remote_ip
+    remote_host = RemoteHost.find_or_create_by_ip_address effective_ip_address
     remote_request = remote_requests.find_or_create_by_remote_host_id remote_host.id
     remote_request.last_http_referer = request.referer if request.referer.present?
     remote_request.last_request_uri = request.request_uri if request.request_uri.present?
