@@ -2,45 +2,58 @@
 
 Catch bad guys when they stick their hands in the honey.
 
-== models
+== rails 3 only
 
-copy gemdir/models/*.rb to your models dir
+uses rack
 
-== requestables interface
+== honeypot models
 
-requestables (like User, Vote, etc.) should define #actor
+honeypots (aka requestables like User, Vote, etc.) should define #actor
 
   class User < ActiveRecord::Base
-    include RemoteRequestLogger
+    has_many :votes
+    include Honeypot
     def actor; self; end
   end
 
   class Vote < ActiveRecord::Base
     belongs_to :user
-    include RemoteRequestLogger
+    include Honeypot
     def actor; user; end
   end
 
 == usage in controllers
 
-put this in your application controller so it has a maximum chance of grabbing the ip
+when somebody touches a honeypot, make sure to log it:
 
-  class ApplicationController < ActionController::Base
-    # this is safe enough for engineyard cloud, where internal ip addresses always start with 10.
-    def ensure_remote_ip
-      session[:remote_ip] = request.remote_ip unless request.remote_ip.starts_with?('10.')
-    end
-    prepend_before_filter :ensure_remote_ip
-  end
-
-then you invoke log_remote_request with both session and request
-
-  class SessionsController < ApplicationController
+  class UsersController < ApplicationController
     def create
-      # @user = [...]
-      @user.log_remote_request session, request
+      # [...]
+      @user.log_remote_request(session, request)
+      # [...]
     end
   end
+
+  class VotesController < ApplicationController
+    def create
+      # [...]
+      @vote.log_remote_request(session, request)
+      # [...]
+    end
+  end
+
+and be creative...
+
+  class SessionController < ApplicationController
+    # notice when a User logs in
+    def create
+      # [...]
+      current_user.log_remote_request(session, request)
+      # [...]
+    end
+  end
+
+you pass both the session and the request so that you have the maximum chance of getting a real remote ip
 
 == migration
 
@@ -69,39 +82,9 @@ then you invoke log_remote_request with both session and request
   add_index "remote_requests", ["remote_host_id"], :name => "index_remote_requests_on_remote_host_id"
   add_index "remote_requests", ["requestable_type", "requestable_id"], :name => "index_remote_requests_on_requestable"
 
-== helper for active-scaffold
+== Acknowledgements
 
-  def remote_requests_column(record)
-    str = '<ul>'
-    str << record.remote_requests.map { |x| content_tag :li, x.to_label }.join
-    str << '</ul>'
-    str
-  end
-
-== remote hosts controller with active-scaffold
-
-  class RemoteHostsController < ApplicationController
-    allow_access :admin
-    layout 'admin'
-    helper :remote_hosts
-    active_scaffold :remote_host do |config|
-      config.list.per_page = 100
-      config.actions.exclude :search, :create, :update, :delete
-      config.columns.add :remote_requests_count
-      config.columns[:remote_requests_count].sort_by :sql => "(SELECT COUNT(remote_requests.id) FROM remote_requests WHERE remote_requests.remote_host_id = remote_hosts.id)"
-      config.columns.add :last_remote_request_at
-      config.columns[:last_remote_request_at].sort_by :sql => "(SELECT MAX(remote_requests.updated_at) FROM remote_requests WHERE remote_requests.remote_host_id = remote_hosts.id)"
-      config.list.columns = %w{
-        hostname
-        ip_address
-        country_code
-        state_name
-        city
-        remote_requests_count
-        last_remote_request_at
-      }
-    end
-  end
+in production use at http://brighterplanet.com
 
 == Copyright
 

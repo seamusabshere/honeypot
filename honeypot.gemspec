@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Seamus Abshere"]
-  s.date = %q{2010-02-02}
+  s.date = %q{2010-05-10}
   s.description = %q{Catch bad guys when they stick their hands in the honey.}
   s.email = %q{seamus@abshere.net}
   s.extra_rdoc_files = [
@@ -25,16 +25,18 @@ Gem::Specification.new do |s|
      "VERSION",
      "honeypot.gemspec",
      "lib/honeypot.rb",
+     "lib/honeypot/ipaddr_ext.rb",
+     "lib/honeypot/rack.rb",
+     "lib/honeypot/railtie.rb",
      "lib/remote_host.rb",
      "lib/remote_request.rb",
-     "lib/remote_request_logger.rb",
      "test/helper.rb",
      "test/test_honeypot.rb"
   ]
   s.homepage = %q{http://github.com/seamusabshere/honeypot}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Track remote requests to catch fraud.}
   s.test_files = [
     "test/helper.rb",
@@ -46,15 +48,21 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<fast_timestamp>, ["= 0.0.4"])
-      s.add_runtime_dependency(%q<geokit>, ["= 1.5.0"])
+      s.add_runtime_dependency(%q<fast_timestamp>, [">= 0.0.4"])
+      s.add_runtime_dependency(%q<geokit>, [">= 1.5.0"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 2.3.5"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 2.3.5"])
     else
-      s.add_dependency(%q<fast_timestamp>, ["= 0.0.4"])
-      s.add_dependency(%q<geokit>, ["= 1.5.0"])
+      s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
+      s.add_dependency(%q<geokit>, [">= 1.5.0"])
+      s.add_dependency(%q<activesupport>, [">= 2.3.5"])
+      s.add_dependency(%q<activerecord>, [">= 2.3.5"])
     end
   else
-    s.add_dependency(%q<fast_timestamp>, ["= 0.0.4"])
-    s.add_dependency(%q<geokit>, ["= 1.5.0"])
+    s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
+    s.add_dependency(%q<geokit>, [">= 1.5.0"])
+    s.add_dependency(%q<activesupport>, [">= 2.3.5"])
+    s.add_dependency(%q<activerecord>, [">= 2.3.5"])
   end
 end
 
