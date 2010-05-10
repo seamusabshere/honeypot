@@ -3,6 +3,8 @@ require 'set'
 require 'active_support'
 require 'active_record'
 require 'honeypot/ipaddr_ext'
+require 'honeypot/remote_request'
+require 'honeypot/remote_host'
 require 'honeypot/rack'
 
 require 'honeypot/railtie' if defined?(Rails::Railtie)

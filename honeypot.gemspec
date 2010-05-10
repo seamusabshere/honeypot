@@ -50,19 +50,19 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_runtime_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 2.3.5"])
-      s.add_runtime_dependency(%q<activerecord>, [">= 2.3.5"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 3.0.0beta2"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 3.0.0beta2"])
     else
       s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_dependency(%q<activesupport>, [">= 2.3.5"])
-      s.add_dependency(%q<activerecord>, [">= 2.3.5"])
+      s.add_dependency(%q<activesupport>, [">= 3.0.0beta2"])
+      s.add_dependency(%q<activerecord>, [">= 3.0.0beta2"])
     end
   else
     s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
     s.add_dependency(%q<geokit>, [">= 1.5.0"])
-    s.add_dependency(%q<activesupport>, [">= 2.3.5"])
-    s.add_dependency(%q<activerecord>, [">= 2.3.5"])
+    s.add_dependency(%q<activesupport>, [">= 3.0.0beta2"])
+    s.add_dependency(%q<activerecord>, [">= 3.0.0beta2"])
   end
 end
 

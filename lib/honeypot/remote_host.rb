@@ -1,15 +1,6 @@
 class RemoteHost < ActiveRecord::Base
   has_many :remote_requests, :dependent => :destroy
 
-  # start active-scaffold interface
-  def remote_requests_count
-    remote_requests.count
-  end
-  def last_remote_request_at
-    remote_requests.calculate :max, :updated_at
-  end
-  # end active-scaffold interface
-
   include FastTimestamp
 
   def lookup_hostname
