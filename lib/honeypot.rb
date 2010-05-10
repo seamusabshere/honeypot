@@ -31,7 +31,7 @@ module Honeypot
   def related_requestables(seen_remote_host_ids = [])
     set = Set.new
     conditions = seen_remote_host_ids.present? ? [ "remote_hosts.id NOT IN (?)", seen_remote_host_ids ] : nil
-    remote_hosts.scoped(:conditions => conditions).find_in_batches do |batch|
+    remote_hosts.where(conditions).find_in_batches do |batch|
       batch.each do |remote_host|
         seen_remote_host_ids << remote_host.id
         remote_host.remote_requests.all(:include => :requestable).each do |remote_request|
