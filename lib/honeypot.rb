@@ -2,6 +2,7 @@ require 'ipaddr'
 require 'set'
 require 'active_support'
 require 'active_record'
+require 'fast_timestamp'
 require 'honeypot/ipaddr_ext'
 require 'honeypot/remote_request'
 require 'honeypot/remote_host'
@@ -22,7 +23,7 @@ module Honeypot
     remote_host = RemoteHost.find_or_create_by_ip_address effective_ip_address
     remote_request = remote_requests.find_or_create_by_remote_host_id remote_host.id
     remote_request.last_http_referer = request.referer if request.referer.present?
-    remote_request.last_request_uri = request.request_uri if request.request_uri.present?
+    remote_request.last_request_uri = request.fullpath if request.fullpath.present?
     remote_request.increment :hits
     remote_request.save!
     true
