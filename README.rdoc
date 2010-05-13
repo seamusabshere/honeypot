@@ -29,7 +29,7 @@ when somebody touches a honeypot, make sure to log it:
   class UsersController < ApplicationController
     def create
       # [...]
-      @user.log_remote_request(session, request)
+      @user.log_remote_request(request)
       # [...]
     end
   end
@@ -37,7 +37,7 @@ when somebody touches a honeypot, make sure to log it:
   class VotesController < ApplicationController
     def create
       # [...]
-      @vote.log_remote_request(session, request)
+      @vote.log_remote_request(request)
       # [...]
     end
   end
@@ -48,12 +48,10 @@ and be creative...
     # notice when a User logs in
     def create
       # [...]
-      current_user.log_remote_request(session, request)
+      current_user.log_remote_request(request)
       # [...]
     end
   end
-
-you pass both the session and the request so that you have the maximum chance of getting a real remote ip
 
 == migration
 
