@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{honeypot}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Seamus Abshere"]
-  s.date = %q{2010-05-10}
+  s.date = %q{2010-05-13}
   s.description = %q{Catch bad guys when they stick their hands in the honey.}
   s.email = %q{seamus@abshere.net}
   s.extra_rdoc_files = [
