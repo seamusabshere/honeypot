@@ -1,5 +1,6 @@
 require 'ipaddr'
 require 'set'
+require 'andand'
 require 'active_support'
 require 'active_support/version'
 %w{
@@ -26,7 +27,7 @@ module Honeypot
   
   def log_remote_request(request)
     effective_ip_address = [
-      request.env['rack.session']['honeypot.last_known_remote_ip'].to_s,
+      request.env['rack.session'].andand['honeypot.last_known_remote_ip'].to_s,
       request.remote_ip.to_s
     ].detect(&:present?)
     remote_host = RemoteHost.find_or_create_by_ip_address effective_ip_address
