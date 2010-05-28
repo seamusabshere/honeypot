@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{honeypot}
-  s.version = "0.0.5"
+  s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Seamus Abshere"]
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
      "lib/honeypot.rb",
      "lib/honeypot/ipaddr_ext.rb",
      "lib/honeypot/rack.rb",
+     "lib/honeypot/rails.rb",
      "lib/honeypot/railtie.rb",
      "lib/honeypot/remote_host.rb",
      "lib/honeypot/remote_request.rb",
@@ -50,19 +51,22 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_runtime_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 3.0.0beta2"])
-      s.add_runtime_dependency(%q<activerecord>, [">= 3.0.0beta2"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 2.3.8"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 2.3.8"])
+      s.add_runtime_dependency(%q<andand>, [">= 1.3.1"])
     else
       s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_dependency(%q<activesupport>, [">= 3.0.0beta2"])
-      s.add_dependency(%q<activerecord>, [">= 3.0.0beta2"])
+      s.add_dependency(%q<activesupport>, [">= 2.3.8"])
+      s.add_dependency(%q<activerecord>, [">= 2.3.8"])
+      s.add_dependency(%q<andand>, [">= 1.3.1"])
     end
   else
     s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
     s.add_dependency(%q<geokit>, [">= 1.5.0"])
-    s.add_dependency(%q<activesupport>, [">= 3.0.0beta2"])
-    s.add_dependency(%q<activerecord>, [">= 3.0.0beta2"])
+    s.add_dependency(%q<activesupport>, [">= 2.3.8"])
+    s.add_dependency(%q<activerecord>, [">= 2.3.8"])
+    s.add_dependency(%q<andand>, [">= 1.3.1"])
   end
 end
 
