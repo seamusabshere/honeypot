@@ -2,9 +2,9 @@
 
 Catch bad guys when they stick their hands in the honey.
 
-== rails 3 only
+== rails 3 best
 
-uses rack
+uses rack... it might work on late versions of rails 2
 
 == honeypot models
 
@@ -29,7 +29,7 @@ when somebody touches a honeypot, make sure to log it:
   class UsersController < ApplicationController
     def create
       # [...]
-      @user.log_remote_request(request)
+      @user.log_action_dispatch_request(request)
       # [...]
     end
   end
@@ -37,7 +37,7 @@ when somebody touches a honeypot, make sure to log it:
   class VotesController < ApplicationController
     def create
       # [...]
-      @vote.log_remote_request(request)
+      @vote.log_action_dispatch_request(request)
       # [...]
     end
   end
@@ -48,7 +48,7 @@ and be creative...
     # notice when a User logs in
     def create
       # [...]
-      current_user.log_remote_request(request)
+      current_user.log_action_dispatch_request(request)
       # [...]
     end
   end

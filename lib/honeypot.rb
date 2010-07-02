@@ -25,15 +25,20 @@ module Honeypot
     end
   end
   
-  def log_remote_request(request)
-    effective_ip_address = [
-      request.env['rack.session'].andand['honeypot.last_known_remote_ip'].to_s,
-      request.remote_ip.to_s
-    ].detect(&:present?)
-    remote_host = RemoteHost.find_or_create_by_ip_address effective_ip_address
+  def log_action_dispatch_request(request)
+    log_remote_request request.env['honeypot.remote_ip'], request.url, request.referer
+  end
+  
+  def log_rack_env(env)
+    request = ::Rack::Request.new env
+    log_remote_request request.env['honeypot.remote_ip'], request.url, request.referer
+  end
+  
+  def log_remote_request(ip_address, url, referer)
+    remote_host = RemoteHost.find_or_create_by_ip_address ip_address
     remote_request = remote_requests.find_or_create_by_remote_host_id remote_host.id
-    remote_request.last_http_referer = request.referer if request.referer.present?
-    remote_request.last_request_uri = request.url if request.url.present?
+    remote_request.last_http_referer = referer
+    remote_request.last_request_uri = url
     remote_request.increment :hits
     remote_request.save!
     true
