@@ -1,5 +1,5 @@
 require 'honeypot'
 
-if defined?(::Rails.configuration) && ::Rails.configuration.respond_to?(:middleware)
-  ::Rails.configuration.middleware.insert_after 'ActionController::Failsafe', ::Honeypot::Rack
-end
+raise "rails 2.3 support isn't tested"
+
+::Rails.configuration.middleware.insert_after '::Rack::MethodOverride', '::Honeypot::BestGuessRouteableRemoteIp'

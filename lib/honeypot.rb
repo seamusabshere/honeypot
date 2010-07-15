@@ -13,9 +13,9 @@ require 'fast_timestamp'
 require 'honeypot/ipaddr_ext'
 require 'honeypot/remote_request'
 require 'honeypot/remote_host'
-require 'honeypot/rack'
+require 'honeypot/best_guess_routeable_remote_ip'
 
-require 'honeypot/railtie' if defined?(Rails::Railtie)
+require 'honeypot/railtie' if defined? ::Rails::Railtie
 
 module Honeypot
   def self.included(base)
@@ -26,12 +26,12 @@ module Honeypot
   end
   
   def log_action_dispatch_request(request)
-    log_remote_request request.env['honeypot.remote_ip'], request.url, request.referer
+    log_remote_request request.env['honeypot.best_guess_routeable_remote_ip'], request.url, request.referer
   end
   
   def log_rack_env(env)
     request = ::Rack::Request.new env
-    log_remote_request request.env['honeypot.remote_ip'], request.url, request.referer
+    log_remote_request request.env['honeypot.best_guess_routeable_remote_ip'], request.url, request.referer
   end
   
   def log_remote_request(ip_address, url, referer)

@@ -3,8 +3,7 @@ require 'rails'
 
 module Honeypot
   class Railtie < Rails::Railtie
-    initializer 'honeypot.configure_rails_initialization' do |app|
-      app.middleware.insert_after 'ActionDispatch::RemoteIp', ::Honeypot::Rack
-    end
+    # more or less, this puts us after the rails helper stuff (ActionDispatch::RemoteIp) but before most custom middleware
+    config.app_middleware.insert_after '::Rack::MethodOverride', '::Honeypot::BestGuessRouteableRemoteIp'
   end
 end
