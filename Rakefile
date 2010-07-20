@@ -12,8 +12,8 @@ begin
     gem.authors = ["Seamus Abshere"]
     gem.add_dependency 'fast_timestamp', '>=0.0.4'
     gem.add_dependency 'geokit', '>=1.5.0'
-    gem.add_dependency 'activesupport', '>=2.3.8'
-    gem.add_dependency 'activerecord', '>=2.3.8'
+    gem.add_dependency 'activesupport', '>=2.3.5'
+    gem.add_dependency 'activerecord', '>=2.3.5'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
