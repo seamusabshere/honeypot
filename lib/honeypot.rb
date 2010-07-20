@@ -9,12 +9,8 @@ require 'active_support/version'
 end if ActiveSupport::VERSION::MAJOR == 3
 require 'active_record'
 require 'fast_timestamp'
-require 'honeypot/ipaddr_ext'
 require 'honeypot/remote_request'
 require 'honeypot/remote_host'
-require 'honeypot/best_guess_routeable_remote_ip'
-
-require 'honeypot/railtie' if defined? ::Rails::Railtie
 
 module Honeypot
   def self.included(base)
@@ -24,17 +20,46 @@ module Honeypot
     end
   end
   
-  def log_action_dispatch_request(request)
-    log_remote_request request.env['honeypot.best_guess_routeable_remote_ip'], request.url, request.referer
+  # Returns a String of the first remote ip, or nil if it doesn't find any.
+  def self.true_remote_ip(ips)
+    hit = ips.detect { |ip| routeable_ip? ip }
+    return unless hit
+    hit.to_s
   end
   
+  UNROUTEABLE_CIDRS = [
+    ::IPAddr.new('127.0.0.1/32'),
+    ::IPAddr.new('10.0.0.0/8'),
+    ::IPAddr.new('172.16.0.0/12'),
+    ::IPAddr.new('192.168.0.0/16')
+  ]
+  
+  def self.routeable_ip?(ip)
+    ip_addr = ::IPAddr.new ip.to_s
+    ip_addr.ipv4? and UNROUTEABLE_CIDRS.none? { |cidr| cidr.include? ip_addr }
+  rescue ArgumentError
+    false
+  end
+  
+  # The Rack middleware isn't enabled, so we have to do it here.
+  # On other requests you'll have to manually save session['honeypot.true_remote_ip']
+  def log_rails_2_request(request, session)
+    if ip = ::Honeypot.true_remote_ip([request.remote_ip, session['honeypot.true_remote_ip']])
+      session['honeypot.true_remote_ip'] = ip
+      log_remote_request ip, request.url, request.referer
+    end
+  end
+  
+  # For use in Rails 3 and other Rack apps.  
   def log_rack_env(env)
     request = ::Rack::Request.new env
-    log_remote_request request.env['honeypot.best_guess_routeable_remote_ip'], request.url, request.referer
+    if env['honeypot.true_remote_ip'].present?
+      log_remote_request env['honeypot.true_remote_ip'], request.url, request.referer
+    end
   end
   
-  def log_remote_request(ip_address, url, referer)
-    remote_host = RemoteHost.find_or_create_by_ip_address ip_address
+  def log_remote_request(ip, url, referer)
+    remote_host = RemoteHost.find_or_create_by_ip_address ip
     remote_request = remote_requests.find_or_create_by_remote_host_id remote_host.id
     remote_request.last_http_referer = referer
     remote_request.last_request_uri = url
@@ -60,4 +85,9 @@ module Honeypot
     set.delete self
     set
   end
+end
+
+if defined? ::Rails::Railtie and ActiveSupport::VERSION::MAJOR > 2
+  require 'honeypot/true_remote_ip'
+  require 'honeypot/railtie'
 end
