@@ -1,6 +1,5 @@
 require 'ipaddr'
 require 'set'
-require 'andand'
 require 'active_support'
 require 'active_support/version'
 %w{
