@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{honeypot}
-  s.version = "0.0.8"
+  s.version = "0.0.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Seamus Abshere"]
-  s.date = %q{2010-07-15}
+  s.date = %q{2010-07-20}
   s.description = %q{Catch bad guys when they stick their hands in the honey.}
   s.email = %q{seamus@abshere.net}
   s.extra_rdoc_files = [
@@ -25,12 +25,10 @@ Gem::Specification.new do |s|
      "VERSION",
      "honeypot.gemspec",
      "lib/honeypot.rb",
-     "lib/honeypot/best_guess_routeable_remote_ip.rb",
-     "lib/honeypot/ipaddr_ext.rb",
-     "lib/honeypot/rails.rb",
      "lib/honeypot/railtie.rb",
      "lib/honeypot/remote_host.rb",
      "lib/honeypot/remote_request.rb",
+     "lib/honeypot/true_remote_ip.rb",
      "test/helper.rb",
      "test/test_honeypot.rb"
   ]
@@ -51,22 +49,19 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_runtime_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 2.3.8"])
-      s.add_runtime_dependency(%q<activerecord>, [">= 2.3.8"])
-      s.add_runtime_dependency(%q<andand>, [">= 1.3.1"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 2.3.5"])
+      s.add_runtime_dependency(%q<activerecord>, [">= 2.3.5"])
     else
       s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
       s.add_dependency(%q<geokit>, [">= 1.5.0"])
-      s.add_dependency(%q<activesupport>, [">= 2.3.8"])
-      s.add_dependency(%q<activerecord>, [">= 2.3.8"])
-      s.add_dependency(%q<andand>, [">= 1.3.1"])
+      s.add_dependency(%q<activesupport>, [">= 2.3.5"])
+      s.add_dependency(%q<activerecord>, [">= 2.3.5"])
     end
   else
     s.add_dependency(%q<fast_timestamp>, [">= 0.0.4"])
     s.add_dependency(%q<geokit>, [">= 1.5.0"])
-    s.add_dependency(%q<activesupport>, [">= 2.3.8"])
-    s.add_dependency(%q<activerecord>, [">= 2.3.8"])
-    s.add_dependency(%q<andand>, [">= 1.3.1"])
+    s.add_dependency(%q<activesupport>, [">= 2.3.5"])
+    s.add_dependency(%q<activerecord>, [">= 2.3.5"])
   end
 end
 
